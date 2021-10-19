@@ -1,12 +1,14 @@
-function out = M_EGM(x,scalar,robust)
-% out = M_EGM(x)
+function out = aux_M_Gauss(x,scalar,robust,a,b)
+% out = aux_M_Gauss(x,scalar,robust,a,b)
 %
-% Preconditioner matrix M(x) for use in the exponential graphical model.
+% Preconditioner matrix M(x) for use in the Gaussian location model.
 %
 % Input:
 % x      = dx1 state vector.
 % scalar = logical, indicating whether M(x) = diag(m_1(x),...,m_d(x)).
 % robust = logical, indicating whether or not to be bias-robust.
+% a      = scalar parameter.
+% b      = scalar parameter.
 %
 % Output:
 % out     = structured object.
@@ -28,13 +30,13 @@ if ~robust
     end
 else
     % robust preconditioner for diffusion Stein discrepancy
-    out.m = exp(-x);
-    out.mx = diag(-exp(-x));
+    out.m = a^2 * (a^2+(x-b).^2).^(-1/2);
+    out.mx = a^2 * diag(-(1/2) * (a^2+(x-b).^2).^(-3/2) .* (2*(x-b)));
     if ~scalar
         out.M = diag(out.m);
         out.Mx = zeros(d,d,d);
         for i = 1:d
-            out.Mx(i,i,:) = - exp(-x(i));
+            out.Mx(i,i,:) = a^2 * -(1/2) * (a^2+(x(i)-b)^2)^(-3/2) * 2 * (x(i)-b);
         end
     end
 end

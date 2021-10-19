@@ -1,11 +1,12 @@
-function out = K_KEF(x,y)
-% out = K_KEF(x,y)
+function out = K_KEF(x,y,S)
+% out = K_KEF(x,y,S)
 %
 % Kernel K(x,y) for use in the kernel exponential family.
 %
 % Input:
 % x      = 1x1 state vector.
 % y      = 1x1 state vector.
+% S      = dxd positive definite matrix.
 %
 % Output:
 % out     = structured object.
@@ -17,17 +18,14 @@ function out = K_KEF(x,y)
 % dimension
 d = 1;
 
-% kernel length-scale
-ell = 1;
-
 % kernel amplitude
 C = 1; 
 
 % univariate kernel for diffusion Stein discrepancy
-out.k = C * (1 + norm((x-y)/ell)^2)^(-1/2);
-out.kx = C * (-1/2) * (1 + norm((x-y)/ell)^2)^(-3/2) * 2 * ((x-y)/ell) * (1/ell);
-out.ky = C * (-1/2) * (1 + norm((x-y)/ell)^2)^(-3/2) * 2 * ((y-x)/ell)' * (1/ell);
-out.kxy = C * (-1/2) * (-3/2) * (1 + norm((x-y)/ell)^2)^(-5/2) * 2 * ((x-y)/ell) * 2 * ((y-x)/ell)' * (1/ell)^2 ...
-                + C * (-1/2) * (1 + norm((x-y)/ell)^2)^(-3/2) * 2 * (1/ell)^2 * (-eye(d,d));         
+out.k = C * (1 + (x-y)'*(S\(x-y)))^(-1/2);
+out.kx = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(x-y));
+out.ky = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(y-x))';
+out.kxy = C * (-1/2) * (-3/2) * (1 + (x-y)'*(S\(x-y)))^(-5/2) * 2 * (S\(x-y)) * 2 * (S\(y-x))' ...
+                + C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (-inv(S));           
 
 end

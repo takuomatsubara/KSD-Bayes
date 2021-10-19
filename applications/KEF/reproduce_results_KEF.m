@@ -2,18 +2,19 @@ clear all
 rng(0)
 
 addpath('../../')
+addpath('../../utilities/')
 
 % load galaxy dataset
 dataset = load('X.mat'); 
 center = mean(dataset.X);
-scale = 0.5 * std(dataset.X);
+scale = std(dataset.X); 
 
 % dimensions
 [d,n] = size(dataset.X);
 
 % center and scale
 Z1 = (dataset.X - center) / scale; % "correct" data
-D = 10; % location for displaced data
+D = 5; % location for displaced data  
 Z2 = D + 0.1*randn(1,n);
 rnd = rand(1,n); % use same underlying randomness for all Bernoulli variables
 
@@ -58,7 +59,7 @@ end
 % plotting
 figure()
 X_grid = linspace(-3*L,max(3*L,D+3),1000); % plotting grid
-n_samples = 10; % number of samples to plot
+n_samples = 100; % number of samples to plot  
 for level = 1:length(eps_levels)
    
     %% plot dataset
@@ -86,7 +87,7 @@ for level = 1:length(eps_levels)
     
     % plot (non-robust) KSD-Bayes posterior mean
     pdf_vals = pdf_KEF(X_grid,mun_KSD_Bayes{level},L);
-    plot(center+scale*X_grid,pdf_vals/scale,'k-')
+    plot(center+scale*X_grid,pdf_vals/scale,'k-','LineWidth',3)
     
     % plot (non-robust) KSD-Bayes posterior samples
     for i = 1:n_samples
@@ -110,7 +111,7 @@ for level = 1:length(eps_levels)
     
     % plot robust KSD-Bayes posterior mean
     pdf_vals = pdf_KEF(X_grid,mun_KSD_Bayes_robust{level},L);
-    plot(center+scale*X_grid,pdf_vals/scale,'k-')
+    plot(center+scale*X_grid,pdf_vals/scale,'k-','LineWidth',3)
     
     % plot KSD-Bayes posterior samples
     for i = 1:n_samples

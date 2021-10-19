@@ -1,6 +1,7 @@
 clear all
 
 addpath('../../')
+addpath('../../utilities/')
 
 % simulate a dataset
 rng(0)
@@ -51,18 +52,18 @@ for level = 1:length(eps_levels)
     % (non-robust) KSD-Bayes posterior
     robust = false;
     out = run_Liu(X{level},robust);
-    beta = min(1,out.w);
-    An = A0 + beta * out.An; % posterior precision
-    vn = v0 + beta * out.vn;
+    beta(level) = min(1,out.w);
+    An = A0 + beta(level) * out.An; % posterior precision
+    vn = v0 + beta(level) * out.vn;
     Sign_KSD_Bayes{level} = (1/2) * inv(An);
     mun_KSD_Bayes{level} = -(1/2) * (An \ vn);
 
     % robust KSD-Bayes posterior
     robust = true;
     out = run_Liu(X{level},robust);
-    beta = min(1,out.w);
-    An = A0 + beta * out.An; % posterior precision
-    vn = v0 + beta * out.vn;
+    beta_robust(level) = min(1,out.w);
+    An = A0 + beta_robust(level) * out.An; % posterior precision
+    vn = v0 + beta_robust(level) * out.vn;
     Sign_KSD_Bayes_robust{level} = (1/2) * inv(An);
     mun_KSD_Bayes_robust{level} = -(1/2) * (An \ vn);
 
@@ -70,7 +71,7 @@ end
 
 % plotting
 figure()
-interval = [-1,1];
+interval = [-0.5,3];
 for level = 1:length(eps_levels)
     
     leg{level} = ['\epsilon = ',num2str(eps_levels(level),'%u')];

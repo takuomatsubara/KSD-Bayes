@@ -1,13 +1,14 @@
-function out = K_Gauss(x,y,scalar,S)
-% out = K_Gauss(x,y,scalar,S)
+function out = aux_K_Gauss(x,y,scalar,sigma,gamma)
+% out = aux_K_Gauss(x,y,scalar,sigma,gamma)
 %
-% Matrix-valued kernel K(x,y) for use in the exponential graphical model.
+% Matrix-valued kernel K(x,y) for use in the Gaussian location model.
 %
 % Input:
 % x      = dx1 state vector.
 % y      = dx1 state vector.
-% scalar = logical, indicating whether K(x,y) = k(x,y) * eye(d,d)
-% S      = dxd positive definite matrix.
+% scalar = logical, indicating whether K(x,y) = k(x,y) * eye(d,d).
+% sigma  = scalar bandwidth parameter.
+% gamma  = scalar exponent parameter.
 %
 % Output:
 % out     = structured object.
@@ -27,11 +28,11 @@ d = length(x);
 C = 1; 
 
 % univariate kernel for diffusion Stein discrepancy
-out.k = C * (1 + (x-y)'*(S\(x-y)))^(-1/2);
-out.kx = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(x-y));
-out.ky = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(y-x))';
-out.kxy = C * (-1/2) * (-3/2) * (1 + (x-y)'*(S\(x-y)))^(-5/2) * 2 * (S\(x-y)) * 2 * (S\(y-x))' ...
-                + C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (-inv(S));         
+out.k = C * (1 + (norm(x-y)/sigma)^2)^(-gamma);
+out.kx = C * (-gamma) * (1 + (norm(x-y)/sigma)^2)^(-gamma-1) * 2 * (x-y) / sigma;
+out.ky = C * (-gamma) * (1 + (norm(x-y)/sigma)^2)^(-gamma-1) * 2 * (y-x)' / sigma;
+out.kxy = C * (-gamma) * (-gamma-1) * (1 + (norm(x-y)/sigma)^2)^(-gamma-2) * 2 * (x-y) * 2 * (y-x)' / (sigma^2) ...
+                + C * (-gamma) * (1 + (norm(x-y)/sigma)^2)^(-gamma-1) * 2 * (-eye(d,d)) / sigma;         
 
 % matrix-valued kernel            
 if ~scalar    

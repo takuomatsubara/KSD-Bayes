@@ -1,5 +1,5 @@
-function out = K_Liu(x,y,scalar)
-% out = K_Liu(x,y)
+function out = K_Liu(x,y,scalar,S)
+% out = K_Liu(x,y,scalar,S)
 %
 % Matrix-valued kernel K(x,y) for use in the Liu et al experiment.
 %
@@ -7,6 +7,7 @@ function out = K_Liu(x,y,scalar)
 % x      = 5x1 state vector.
 % y      = 5x1 state vector.
 % scalar = logical, indicating whether K(x,y) = k(x,y) * eye(5,5)
+% S      = 5x5 positive definite matrix.
 %
 % Output:
 % out     = structured object.
@@ -26,11 +27,11 @@ d = 5;
 C = 1; 
 
 % univariate kernel for diffusion Stein discrepancy
-out.k = C * (1 + norm(x-y)^2)^(-1/2);
-out.kx = C * (-1/2) * (1 + norm(x-y)^2)^(-3/2) * 2 * (x-y);
-out.ky = C * (-1/2) * (1 + norm(x-y)^2)^(-3/2) * 2 * (y-x)';
-out.kxy = C * (-1/2) * (-3/2) * (1 + norm(x-y)^2)^(-5/2) * 2 * (x-y) * 2 * (y-x)' ...
-                + C * (-1/2) * (1 + norm(x-y)^2)^(-3/2) * 2 * (-eye(d,d));         
+out.k = C * (1 + (x-y)'*(S\(x-y)))^(-1/2);
+out.kx = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(x-y));
+out.ky = C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (S\(y-x))';
+out.kxy = C * (-1/2) * (-3/2) * (1 + (x-y)'*(S\(x-y)))^(-5/2) * 2 * (S\(x-y)) * 2 * (S\(y-x))' ...
+                + C * (-1/2) * (1 + (x-y)'*(S\(x-y)))^(-3/2) * 2 * (-inv(S));      
 
 % matrix-valued kernel            
 if scalar == false

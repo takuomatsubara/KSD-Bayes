@@ -1,6 +1,7 @@
 clear all
 
 addpath('../../')
+addpath('../../utilities/')
 
 % simulate a dataset
 rng(0)

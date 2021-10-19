@@ -1,17 +1,18 @@
 clear all
 
 addpath('../../')
+addpath('../../utilities/')
 
 % load Sachs et al dataset (outliers removed)
 dataset = load('X.mat');
 names = dataset.names;
 
 % dimensions
-[d,n] = size(dataset.X1);
+[d,n] = size(dataset.X);
 p = d*(d+1)/2; 
 
 % dataset
-Z1 = dataset.X1; % "correct" data
+Z1 = dataset.X; % "correct" data
 Z2 = 10*ones(d,n); % "incorrect" data
 rnd = rand(1,n); % use same underlying randomness for all Bernoulli variables
 

@@ -16,7 +16,7 @@ function out = pdf_KEF(X,coeff,L)
 p = length(coeff);
 
 % Vandermonde matrix
-mat = (factorial((1:p)')).^(-1/2) .* bsxfun(@power,X,(1:p)') ...
+mat = (factorial((0:(p-1))')).^(-1/2) .* bsxfun(@power,X,(0:(p-1))') ...
       .* exp(-X.^2/2);
 
 % log of un-normalised p.d.f.

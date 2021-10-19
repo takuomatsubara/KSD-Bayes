@@ -21,7 +21,7 @@ if ~robust
     out.mx = zeros(d,d);
 else
     % robust preconditioner for diffusion Stein discrepancy
-    C = 1;
+    C = 1; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     out.m = (1 + C*x^2)^(-1/2); 
     out.mx = - C * x * (1 + C*x^2)^(-3/2);
 end
