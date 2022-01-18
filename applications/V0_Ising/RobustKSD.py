@@ -146,7 +146,7 @@ class KSD_Bayes():
     
     
     def HK(self, X):
-        M = ( torch.sum(X, dim=1).abs() <= self.thres ).float().reshape(X.shape[0], 1)
+        M = ( 1 / ( 1 + torch.exp(-( self.thres - torch.sum(X, dim=1).abs() )) ) ).reshape(X.shape[0], 1)
         K = torch.exp( - torch.cdist(X, X, p=0) / X.shape[1] * self.gamma )
         return M * K * M.t()
     
@@ -158,10 +158,10 @@ class KSD_Bayes():
     
     
     def HK_D(self, X):
-        M = ( torch.sum(X, dim=1).abs() <= self.thres ).float()
+        M = ( 1 / ( 1 + torch.exp(-( self.thres - torch.sum(X, dim=1).abs() )) ) )
         
         X_m = StateShiftMinus(X, torch.Tensor([-1,1]), 2)
-        M_m = ( torch.sum(X_m, dim=2).abs() <= self.thres ).float()
+        M_m = ( 1 / ( 1 + torch.exp(-( self.thres - torch.sum(X_m, dim=2).abs() )) ) )
         K_m = torch.exp( - torch.cdist(X, X_m, p=0) / X.shape[1] )
         
         HK_h = ( self.HK_XX ).unsqueeze(-1)
