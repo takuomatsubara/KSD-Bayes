@@ -4,15 +4,21 @@ This repository contains [Matlab (R2021a)](https://uk.mathworks.com/products/new
 
 The main function is KSD_Bayes, which performs conjugate inference for exponential family models using KSD-Bayes. 
 
-There are four applications considered in the paper: 
+There are four main applications considered in the paper: 
 
 1. A Gaussian location model, 
 2. a two-dimensional scale parameter estimation problem due to Liu et al, 
 3. density estimation using a kernel exponential family model, 
 4. an exponential graphical model, and
-5. A Ising model (this application is implemented by [Pytorch](https://pytorch.org)).
 
 Results for each application can be reproduced by running the files reproduce_[X].m, where [X] = Gauss, Liu, KEF, EGM.
+
+In addition, there is one more supplementary application:
+
+5. A Ising model (this application is implemented by [Pytorch](https://pytorch.org)).
+
+A Result for this application can be reproduced by running *.py files with a setting contain in *.sh files.
+
 
 
 #### Dependencies
